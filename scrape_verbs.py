@@ -105,10 +105,6 @@ def generate_verb_forms():
             keigo_form = keigo_form_elements.text.strip(
             ) if keigo_form_elements.text else ""
 
-            # iterate through form elements, built different positive forms list
-            # for kanji do the same - iterate, build list
-            # rely on same index assumption betwee form and kanji
-            #-------------------------------------------------------------------
             positive_form_regex = re.compile("(.*)\s*<br>",
                                              re.IGNORECASE | re.MULTILINE | re.UNICODE)
             positive_form_elements = verb_form_row.xpath(
@@ -134,37 +130,8 @@ def generate_verb_forms():
                 positive_forms = [positive_form
                                   for positive_form in positive_forms
                                   if positive_form]
-                # print positive_forms
-            #------
-                # Does the positive kanji forms
                 for span in spans:
                     positive_kanji_forms.append(span.text)
-                    # print html.tostring(span)
-                    # print span.text
-                # print "---------------------------"
-                # print positive_kanji_forms
-
-                #------
-
-                # print positive_forms
-                # for line in p.text:
-                # print line
-
-                # positive_form = positive_form_element.text.strip(
-                # ) if positive_form_element.text else ""
-                # positive_forms.append(positive_form)
-
-                # print positive_forms
-                # positive_form = positive_form_elements.text.strip(
-                # ) if positive_form_elements.text else ""
-                # print positive_form
-                #-----------------------------------------------------------
-
-                # positive_kanji_elements = positive_form_elements.xpath("span")
-                # print len(positive_kanji_elements)
-                # positive_kanji = ""
-                # for positive_kanji_element in positive_kanji_elements:
-                #     positive_kanji += positive_kanji_element.text
 
             negative_form_elements = verb_form_row.xpath(
                 "td[" + str(last_table_cell_index) + "]")[0]
@@ -179,10 +146,12 @@ def generate_verb_forms():
 
             if len(positive_forms) < len(positive_kanji_forms):
                 print "less english than kanji"
+                while len(positive_forms) < len(positive_kanji_forms):
+                    positive_forms = [""] + positive_forms
             elif len(positive_forms) > len(positive_kanji_forms):
                 print "less kanji than english"
-                # print positive_forms
-                # print positive_kanji_forms
+                while len(positive_forms) > len(positive_kanji_forms):
+                    positive_kanji_forms = [""] + positive_kanji_forms
 
             for positive_form, positive_kanji_form in zip(positive_forms, positive_kanji_forms):
                 positive_row_output = [

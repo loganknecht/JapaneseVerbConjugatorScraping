@@ -8,7 +8,8 @@ ike,Iku Imperative,行け,Positive,Plain,Iku
 itte kudasai,Iku Imperative,行ってください,Positive,Polite,Iku
 itta,Iku Past Indicative,行った,Positive,Plain,Iku
 ikimashita,Iku Past Indicative,行きました,Positive,Polite,Iku
-ittarō,Iku Past Presumptive,行っただろう,Positive,Plain,Iku
+ittarō,Iku Past Presumptive,,Positive,Plain,Iku
+itta darō,Iku Past Presumptive,行っただろう,Positive,Plain,Iku
 itta deshō,Iku Past Presumptive,行ったでしょう,Positive,Polite,Iku
 itte iru,Iku Present Progressive,行って いる,Positive,Plain,Iku
 itte imasu,Iku Present Progressive,行って います,Positive,Polite,Iku
