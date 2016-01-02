@@ -123,7 +123,7 @@ def generate_verb_forms():
                 "span")
             negative_kanji = ""
             for negative_kanji_element in negative_kanji_elements:
-                negative_kanji = negative_kanji_element.text
+                negative_kanji += negative_kanji_element.text
 
             positive_row_output = [
                 positive_form,
