@@ -2,9 +2,9 @@ iku,Iku Present Indicative,行く,Positive,Plain,Iku
 ikanai,Iku Present Indicative,行かない,Negative,Plain,Iku
 ikimasu,Iku Present Indicative,行きます,Positive,Polite,Iku
 ikimasen,Iku Present Indicative,行きません,Negative,Polite,Iku
-ikō,Iku Presumptive \ Volitional,行こう/行く だろう,Positive,Plain,Iku
+ikō,Iku Presumptive \ Volitional,行こう行く だろう,Positive,Plain,Iku
 ikanai darō,Iku Presumptive \ Volitional,行かないだろう,Negative,Plain,Iku
-ikimashō,Iku Presumptive \ Volitional,行きましょう/行くでしょう,Positive,Polite,Iku
+ikimashō,Iku Presumptive \ Volitional,行きましょう行くでしょう,Positive,Polite,Iku
 ikanai deshō,Iku Presumptive \ Volitional,行かないでしょう,Negative,Polite,Iku
 ike,Iku Imperative,行け,Positive,Plain,Iku
 iku na,Iku Imperative,行くな,Negative,Plain,Iku
@@ -28,7 +28,7 @@ itte imashita,Iku Past Progressive,行って いました,Positive,Polite,Iku
 itte imasen deshita,Iku Past Progressive,行って いませんでした,Negative,Polite,Iku
 ikeba,Iku Provisional Conditional eba,行けば,Positive,Plain,Iku
 ikanakereba,Iku Provisional Conditional eba,行かなければ,Negative,Plain,Iku
-ikimaseba,Iku Provisional Conditional eba,行きませば/行きますれば,Positive,Polite,Iku
+ikimaseba,Iku Provisional Conditional eba,行きませば行きますれば,Positive,Polite,Iku
 ikimasen nara,Iku Provisional Conditional eba,行きませんなら,Negative,Polite,Iku
 ittara,Iku Conditional (-tara form),行ったら,Positive,Plain,Iku
 ikanakattara,Iku Conditional (-tara form),行かなかったら,Negative,Plain,Iku

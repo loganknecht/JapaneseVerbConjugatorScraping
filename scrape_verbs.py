@@ -105,20 +105,14 @@ def generate_verb_forms():
 
             positive_form_elements = verb_form_row.xpath(
                 "td[" + str(last_table_cell_index - 1) + "]")[0]
-            # positive_form = positive_form_elements.text.strip(
-            # ) if positive_form_elements.text else ""
-            positive_form = "/".join([positive_form_element.text
-                                      for positive_form_element
-                                      in positive_form_elements])
-            print positive_form
+            positive_form = positive_form_elements.text.strip(
+            ) if positive_form_elements.text else ""
 
             positive_kanji_elements = positive_form_elements.xpath(
                 "span")
-            positive_kanji = "/".join([positive_kanji_element.text
-                                       for positive_kanji_element
-                                       in positive_kanji_elements])
-            # for positive_kanji_element in positive_kanji_elements:
-            #     positive_kanji += positive_kanji_element.text
+            positive_kanji = ""
+            for positive_kanji_element in positive_kanji_elements:
+                positive_kanji += positive_kanji_element.text
 
             negative_form_elements = verb_form_row.xpath(
                 "td[" + str(last_table_cell_index) + "]")[0]
