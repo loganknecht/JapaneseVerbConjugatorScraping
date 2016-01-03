@@ -64,6 +64,7 @@ def generate_verb_forms():
         # verb_row_output.append(te_row)
         # verb_row_output.append(infinitive_row)
 
+        #-----------------------------------------------------------------------
         #----------------------------
         # Verb Form Info Here
         #----------------------------
@@ -105,8 +106,9 @@ def generate_verb_forms():
             keigo_form = keigo_form_elements.text.strip(
             ) if keigo_form_elements.text else ""
 
-            positive_form_regex = re.compile("(.*)\s*<br>",
-                                             re.IGNORECASE | re.MULTILINE | re.UNICODE)
+            #-------------------------------------------------------------------
+            # TODO: REFACTOR SO THAT THIS AND POSITIVE FORMS ARE A SINGLE
+            # FUNCTION
             positive_form_elements = verb_form_row.xpath(
                 "td[" + str(last_table_cell_index - 1) + "]")
 
@@ -114,6 +116,7 @@ def generate_verb_forms():
             positive_kanji_forms = []
 
             for positive_form_element in positive_form_elements:
+                # print html.tostring(positive_form_element)
                 spans = positive_form_element.xpath('span')
                 for span in spans:
                     positive_form_element.remove(span)
@@ -123,6 +126,7 @@ def generate_verb_forms():
                 raw_html = re.sub('<br>', '', raw_html)
                 raw_html = re.sub('<td>', '', raw_html)
                 raw_html = re.sub('</td>', '', raw_html)
+                # print raw_html
 
                 for line in raw_html.split("\n"):
                     positive_forms.append(line.strip())
@@ -133,23 +137,12 @@ def generate_verb_forms():
                 for span in spans:
                     positive_kanji_forms.append(span.text)
 
-            negative_form_elements = verb_form_row.xpath(
-                "td[" + str(last_table_cell_index) + "]")[0]
-            negative_form = negative_form_elements.text.strip(
-            ) if negative_form_elements.text else ""
-
-            negative_kanji_elements = negative_form_elements.xpath(
-                "span")
-            negative_kanji = ""
-            for negative_kanji_element in negative_kanji_elements:
-                negative_kanji += negative_kanji_element.text
-
             if len(positive_forms) < len(positive_kanji_forms):
-                print "less english than kanji"
+                # print "less english than kanji"
                 while len(positive_forms) < len(positive_kanji_forms):
                     positive_forms = [""] + positive_forms
             elif len(positive_forms) > len(positive_kanji_forms):
-                print "less kanji than english"
+                # print "less kanji than english"
                 while len(positive_forms) > len(positive_kanji_forms):
                     positive_kanji_forms = [""] + positive_kanji_forms
 
@@ -163,17 +156,57 @@ def generate_verb_forms():
                     dictionary_form,
                 ]
                 verb_row_output.append(positive_row_output)
+            #-------------------------------------------------------------------
+            # TODO: REFACTOR SO THAT THIS AND POSITIVE FORMS ARE A SINGLE
+            # FUNCTION
+            negative_form_elements = verb_form_row.xpath(
+                "td[" + str(last_table_cell_index) + "]")
 
-            # negative_row_output = [
-            #     negative_form,
-            #     current_verb_form,
-            #     negative_kanji,
-            #     "Negative",
-            #     keigo_form,
-            #     dictionary_form,
-            # ]
-            #-----
-            # verb_row_output.append(negative_row_output)
+            negative_forms = []
+            negative_kanji_forms = []
+
+            for negative_form_element in negative_form_elements:
+                # print html.tostring(negative_form_element)
+                spans = negative_form_element.xpath('span')
+                for span in spans:
+                    negative_form_element.remove(span)
+
+                raw_html = html.tostring(negative_form_element)
+                raw_html = clean_html(raw_html)
+                raw_html = re.sub('<br>', '', raw_html)
+                raw_html = re.sub('<td>', '', raw_html)
+                raw_html = re.sub('</td>', '', raw_html)
+                # print raw_html
+
+                for line in raw_html.split("\n"):
+                    negative_forms.append(line.strip())
+
+                negative_forms = [negative_form
+                                  for negative_form in negative_forms
+                                  if negative_form]
+                for span in spans:
+                    negative_kanji_forms.append(span.text)
+
+            if len(negative_forms) < len(negative_kanji_forms):
+                # print "less english than kanji"
+                while len(negative_forms) < len(negative_kanji_forms):
+                    negative_forms = [""] + negative_forms
+            elif len(negative_forms) > len(negative_kanji_forms):
+                # print "less kanji than english"
+                while len(negative_forms) > len(negative_kanji_forms):
+                    negative_kanji_forms = [""] + negative_kanji_forms
+
+            for negative_form, negative_kanji_form in zip(negative_forms, negative_kanji_forms):
+                negative_row_output = [
+                    negative_form,
+                    current_verb_form,
+                    negative_kanji_form,
+                    "Negative",
+                    keigo_form,
+                    dictionary_form,
+                ]
+                verb_row_output.append(negative_row_output)
+            #-------------------------------------------------------------------
 
         with open(output_file_path, "w") as csv_file_handle:
             verb_csv_writer = csv.writer(csv_file_handle)
