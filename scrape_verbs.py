@@ -1,6 +1,6 @@
 #!env/bin/python
 # Python Standard Libraries
-import csv
+import re
 # import re
 # Third-Party Libraries
 from lxml import html
@@ -9,7 +9,6 @@ import os
 import requests
 import unicodecsv as csv
 import HTMLParser
-import regex as re
 # Custom Libraries
 # N/A
 
@@ -25,14 +24,13 @@ def generate_verb_list():
     verb_list_xpath = "/html/body/div[3]/div[1]/div[4]/div[1]/table"
     table_element = verb_list_tree_root.xpath(verb_list_xpath)[0]
     table_row_elements = table_element.xpath("tr")
-    print len(table_row_elements)
     for table_row_element in table_row_elements:
-        verb_list = table_row_element.xpath("td")
-        if verb_list:
+        for verb_list in table_row_element.xpath("td"):
             print verb_list[0].text
 
 
 def generate_verb_forms():
+    os.makedirs("output_files")
     verb_row_output = []
     dictionary_form = "Iku"
 
