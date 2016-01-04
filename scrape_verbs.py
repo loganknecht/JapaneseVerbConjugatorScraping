@@ -16,6 +16,7 @@ htmlParser = HTMLParser.HTMLParser()
 
 
 def generate_verb_list():
+    verbs = []
     verb_list_url = "http://www.japaneseverbconjugator.com/JVerbList.asp"
     verb_list_webpage = requests.get(verb_list_url)
     parser = html.HTMLParser(encoding='utf-8')
@@ -24,21 +25,26 @@ def generate_verb_list():
     verb_list_xpath = "/html/body/div[3]/div[1]/div[4]/div[1]/table"
     table_element = verb_list_tree_root.xpath(verb_list_xpath)[0]
     table_row_elements = table_element.xpath("tr")
+    print "{} verbs found.".format(len(table_row_elements))
     for table_row_element in table_row_elements:
-        for verb_list in table_row_element.xpath("td"):
-            print verb_list[0].text
+        verb_list = table_row_element.xpath("td")
+        if verb_list:
+            verbs.append(verb_list[0].text)
+
+    return verbs
 
 
-def generate_verb_forms():
+def generate_verb_forms(dictionary_forms):
     try:
         os.makedirs("output_files")
     except:
         pass
 
-    verb_row_output = []
-    dictionary_forms = ["Iku"]
-
     for dictionary_form in dictionary_forms:
+        verb_row_output = []
+
+        print "Generating verb information {}".format(dictionary_form)
+
         verb_form_url = ("http"                               # protocol
                          "://www.japaneseverbconjugator.com"  # hostname
                          "/VerbDetails.asp"                   # path
@@ -53,7 +59,7 @@ def generate_verb_forms():
 
         verb_form_filename = "{} {}.csv".format(dictionary_form,
                                                 "Verb Forms")
-        verb_form_filepaths = os.path.join(os.getcwd(),
+        verb_forms_filepath = os.path.join(os.getcwd(),
                                            "output_files",
                                            verb_form_filename)
 
@@ -90,26 +96,30 @@ def generate_verb_forms():
             stem_column = "{} Stem".format(dictionary_form,
                                            "Stem")
             stem_element = selected_element.xpath("tr[2]/td")[0]
-            stem_kanji_element = stem_element.xpath("span")[0]
-            stem_kanji = stem_kanji_element.text
+            stem_kanji_elements = stem_element.xpath("span")
+            stem_kanji = stem_kanji_elements[
+                0].text if stem_kanji_elements else ""
             stem = stem_element.text.strip()
             stem_row = [stem_column, stem, stem_kanji]
 
             te_form_column = "{} Te Form".format(dictionary_form)
             te_form_element = selected_element.xpath("tr[3]/td")[0]
-            te_form_kanji_element = te_form_element.xpath("span")[0]
-            te_form_kanji = te_form_kanji_element.text
+            te_form_kanji_elements = te_form_element.xpath("span")
+            te_form_kanji = te_form_kanji_elements[
+                0].text if te_form_kanji_elements else ""
             te_form = te_form_element.text.strip()
             te_row = [te_form_column, te_form, te_form_kanji]
 
             infinitive_column = "{} Infinitive".format(dictionary_form,
                                                        "Infinitive")
             infinitive_element = selected_element.xpath("tr[4]/td")[0]
-            infinitive_kanji_element = infinitive_element.xpath("span")[0]
-            infinitive_kanji = infinitive_kanji_element.text
+            infinitive_kanji_elements = infinitive_element.xpath("span")
+            infinitive_kanji = infinitive_kanji_elements[
+                0].text if infinitive_kanji_elements else ""
             infinitive = infinitive_element.text.strip()
             infinitive_row = [infinitive_column, infinitive, infinitive_kanji]
 
+            print "Writing file: {}".format(os.path.basename(verb_properties_filepath))
             with open(verb_properties_filepath, "w") as csv_file_handle:
                 verb_csv_writer = csv.writer(csv_file_handle)
                 verb_csv_writer.writerow(verb_class_row)
@@ -206,7 +216,7 @@ def generate_verb_forms():
 
                 for positive_form, positive_kanji_form in zip(positive_forms, positive_kanji_forms):
                     positive_row_output = [
-                        positive_form,
+                        positive_form.capitalize(),
                         current_verb_form,
                         positive_kanji_form,
                         "Positive",
@@ -256,7 +266,7 @@ def generate_verb_forms():
 
                 for negative_form, negative_kanji_form in zip(negative_forms, negative_kanji_forms):
                     negative_row_output = [
-                        negative_form,
+                        negative_form.capitalize(),
                         current_verb_form,
                         negative_kanji_form,
                         "Negative",
@@ -266,13 +276,19 @@ def generate_verb_forms():
                     verb_row_output.append(negative_row_output)
                 #---------------------------------------------------------------
 
-            with open(verb_form_filepaths, "w") as csv_file_handle:
+            print "Writing file: {}".format(os.path.basename(verb_forms_filepath))
+            with open(verb_forms_filepath, "w") as csv_file_handle:
                 verb_csv_writer = csv.writer(csv_file_handle)
                 verb_csv_writer.writerows(verb_row_output)
 
 
 def main():
-    generate_verb_forms()
+    dictionary_form_verbs = generate_verb_list()
+    dictionary_form_verbs = [dictionary_form_verb.capitalize()
+                             for dictionary_form_verb
+                             in dictionary_form_verbs]
+    # generate_verb_forms(["Iku", "Taberu", "Kaku"])
+    generate_verb_forms(dictionary_form_verbs)
 
 if __name__ == "__main__":
     main()
