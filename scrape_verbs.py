@@ -16,15 +16,31 @@ import regex as re
 htmlParser = HTMLParser.HTMLParser()
 
 
+def generate_verb_list():
+    verb_list_url = "http://www.japaneseverbconjugator.com/JVerbList.asp"
+    verb_list_webpage = requests.get(verb_list_url)
+    parser = html.HTMLParser(encoding='utf-8')
+    verb_list_tree_root = html.fromstring(verb_list_webpage.content,
+                                          parser=parser)
+    verb_list_xpath = "/html/body/div[3]/div[1]/div[4]/div[1]/table"
+    table_element = verb_list_tree_root.xpath(verb_list_xpath)[0]
+    table_row_elements = table_element.xpath("tr")
+    print len(table_row_elements)
+    for table_row_element in table_row_elements:
+        verb_list = table_row_element.xpath("td")
+        if verb_list:
+            print verb_list[0].text
+
+
 def generate_verb_forms():
     verb_row_output = []
     dictionary_form = "Iku"
 
-    url = ("http"                               # protocol
-           "://www.japaneseverbconjugator.com"  # hostname
-           "/VerbDetails.asp"                   # path
-           "?txtVerb=" + dictionary_form + ""   # query string
-           "&Go=Conjugate")
+    verb_form_url = ("http"                               # protocol
+                     "://www.japaneseverbconjugator.com"  # hostname
+                     "/VerbDetails.asp"                   # path
+                     "?txtVerb=" + dictionary_form + ""   # query string
+                     "&Go=Conjugate")
 
     verb_properties_filename = "{} {}.csv".format(dictionary_form,
                                                   "Verb Properties")
@@ -38,10 +54,10 @@ def generate_verb_forms():
                                        "output_files",
                                        verb_form_filename)
 
-    webpage = requests.get(url)
+    verb_form_webpage = requests.get(verb_form_url)
 
     parser = html.HTMLParser(encoding='utf-8')
-    tree_root = html.fromstring(webpage.content, parser=parser)
+    tree_root = html.fromstring(verb_form_webpage.content, parser=parser)
 
     # Gets the root table that all the information is in
     xpath = "/html/body/div[2]/div[1]/div[4]/div[1]/table[1]"
