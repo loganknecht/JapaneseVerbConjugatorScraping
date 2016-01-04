@@ -26,8 +26,17 @@ def generate_verb_forms():
            "?txtVerb=" + dictionary_form + ""   # query string
            "&Go=Conjugate")
 
-    output_file_name = "output.csv"
-    output_file_path = os.path.join(os.getcwd(), "output", output_file_name)
+    verb_properties_filename = "{} {}.csv".format(dictionary_form,
+                                                  "Verb Properties")
+    verb_properties_filepath = os.path.join(os.getcwd(),
+                                            "output_files",
+                                            verb_properties_filename)
+
+    verb_form_filename = "{} {}.csv".format(dictionary_form,
+                                            "Verb Forms")
+    verb_form_filepaths = os.path.join(os.getcwd(),
+                                       "output_files",
+                                       verb_form_filename)
 
     webpage = requests.get(url)
 
@@ -43,26 +52,56 @@ def generate_verb_forms():
         # Basic Verb Info Here
         #----------------------------
         class_element = selected_element.xpath("tr[1]/td")[0]
-        verb_class = class_element.text.strip()
-        verb_class_row = [u"" + dictionary_form + " Class", verb_class]
+        class_kanji_element = class_element.xpath("span")[0]
+        verb_class_kanji = class_kanji_element.text
+        class_element_text = re.sub("~", "", class_element.text)
+        verb_class_split = class_element_text.split()
+        verb_class_split = [verb_class.strip()
+                            for verb_class
+                            in verb_class_split]
 
+        verb_class = verb_class_split[0].strip()
+        verb_class_column = "{} Class Level".format(dictionary_form)
+        verb_class_row = [verb_class_column, verb_class, verb_class_kanji]
+
+        dan_class = verb_class_split[1].strip()
+        dan_class_column = "{} ~Dan Class".format(dictionary_form)
+        dan_class_row = [dan_class_column, dan_class, verb_class_kanji]
+
+        stem_column = "{} Stem".format(dictionary_form,
+                                       "Stem")
         stem_element = selected_element.xpath("tr[2]/td")[0]
+        stem_kanji_element = stem_element.xpath("span")[0]
+        stem_kanji = stem_kanji_element.text
         stem = stem_element.text.strip()
-        stem_row = [u"" + dictionary_form + " Stem", stem]
+        stem_row = [stem_column, stem, stem_kanji]
 
+        te_form_column = "{} Te Form".format(dictionary_form)
         te_form_element = selected_element.xpath("tr[3]/td")[0]
+        te_form_kanji_element = te_form_element.xpath("span")[0]
+        te_form_kanji = te_form_kanji_element.text
         te_form = te_form_element.text.strip()
-        te_row = [u"" + dictionary_form + " Te Form", te_form]
+        te_row = [te_form_column, te_form, te_form_kanji]
 
+        infinitive_column = "{} Infinitive".format(dictionary_form,
+                                                   "Infinitive")
         infinitive_element = selected_element.xpath("tr[4]/td")[0]
+        infinitive_kanji_element = infinitive_element.xpath("span")[0]
+        infinitive_kanji = infinitive_kanji_element.text
         infinitive = infinitive_element.text.strip()
-        infinitive_row = [u"" + dictionary_form + " Infinitive", infinitive]
+        infinitive_row = [infinitive_column, infinitive, infinitive_kanji]
 
-        # Add rows to list
-        # verb_row_output.append(verb_class_row)
-        # verb_row_output.append(stem_row)
-        # verb_row_output.append(te_row)
-        # verb_row_output.append(infinitive_row)
+        with open(verb_properties_filepath, "w") as csv_file_handle:
+            verb_csv_writer = csv.writer(csv_file_handle)
+            verb_csv_writer.writerow(verb_class_row)
+            # verb_csv_writer.writerow(verb_class_kanji_row)
+            verb_csv_writer.writerow(dan_class_row)
+            verb_csv_writer.writerow(stem_row)
+            # verb_csv_writer.writerow(stem_kanji_row)
+            verb_csv_writer.writerow(te_row)
+            # verb_csv_writer.writerow(te_form_kanji_row)
+            verb_csv_writer.writerow(infinitive_row)
+            # verb_csv_writer.writerow(infinitive_kanji_row)
 
         #-----------------------------------------------------------------------
         #----------------------------
@@ -123,9 +162,9 @@ def generate_verb_forms():
 
                 raw_html = html.tostring(positive_form_element)
                 raw_html = clean_html(raw_html)
-                raw_html = re.sub('<br>', '', raw_html)
-                raw_html = re.sub('<td>', '', raw_html)
-                raw_html = re.sub('</td>', '', raw_html)
+                raw_html = re.sub("<br>", "", raw_html)
+                raw_html = re.sub("<td>", "", raw_html)
+                raw_html = re.sub("</td>", "", raw_html)
                 # print raw_html
 
                 for line in raw_html.split("\n"):
@@ -208,16 +247,8 @@ def generate_verb_forms():
                 verb_row_output.append(negative_row_output)
             #-------------------------------------------------------------------
 
-        with open(output_file_path, "w") as csv_file_handle:
+        with open(verb_form_filepaths, "w") as csv_file_handle:
             verb_csv_writer = csv.writer(csv_file_handle)
-
-            # verb_csv_writer.writerow([
-            #     "Verb",
-            #     "Verb Form",
-            #     "Verb Tone",
-            #     "Keigo Form",
-            #     "Dictionary Form",
-            # ])
             verb_csv_writer.writerows(verb_row_output)
 
 
