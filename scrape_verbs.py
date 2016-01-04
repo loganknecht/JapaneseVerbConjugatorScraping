@@ -283,10 +283,17 @@ def generate_verb_forms(dictionary_forms):
 
 
 def main():
+    verbs_to_skip = ["Kuru"]
+
     dictionary_form_verbs = generate_verb_list()
     dictionary_form_verbs = [dictionary_form_verb.capitalize()
                              for dictionary_form_verb
                              in dictionary_form_verbs]
+    dictionary_form_verbs = [dictionary_form
+                             for dictionary_form
+                             in dictionary_form_verbs
+                             if dictionary_form not in verbs_to_skip]
+
     # generate_verb_forms(["Iku", "Taberu", "Kaku"])
     generate_verb_forms(dictionary_form_verbs)
 
